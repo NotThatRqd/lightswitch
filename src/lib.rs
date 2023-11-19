@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use std::net::SocketAddr;
 use std::sync::Mutex;
 use subprocess::{Exec, Popen};
 use btnify::ShutdownConfig;
@@ -6,28 +7,34 @@ use btnify::button::ButtonResponse;
 use btnify::{button::Button, bind_server};
 
 pub struct LightSwitchState {
-    pub server_process: Popen,
-    pub config: Config,
+    server_process: Popen,
+    process_info: ProcessInfo,
 }
 
 impl LightSwitchState {
-    pub fn new(config: Config) -> LightSwitchState {
-        let server_process = config.start_process();
+    fn new(process_info: ProcessInfo) -> LightSwitchState {
+        let server_process = process_info.start_process();
         LightSwitchState {
             server_process,
-            config, 
+            process_info, 
         }
     }
 }
 
 #[derive(Deserialize)]
 pub struct Config {
+    addr: SocketAddr,
+    process_info: ProcessInfo,
+}
+
+#[derive(Deserialize)]
+struct ProcessInfo {
     cmd: String,
     args: Vec<String>,
     cwd: String,
 }
 
-impl Config {
+impl ProcessInfo {
     fn start_process(&self) -> Popen {
         println!("[LIGHTSWITCH] The process is being started...");
 
@@ -44,7 +51,10 @@ pub async fn start_lightswitch(config: Config) {
     let check = Button::create_button_with_state("check server", Box::new(check_click));
 
     let shutdown_config = ShutdownConfig::new(None, Some(Box::new(on_lightswitch_end)));
-    bind_server(&"0.0.0.0:3000".parse().unwrap(), vec![start, check], Mutex::new(LightSwitchState::new(config)), Some(shutdown_config))
+
+    let state = Mutex::new(LightSwitchState::new(config.process_info));
+
+    bind_server(&config.addr, vec![start, check], state, Some(shutdown_config))
         .await
         .unwrap();
 }
@@ -55,7 +65,7 @@ fn start_click(state: &Mutex<LightSwitchState>) -> ButtonResponse {
     if is_running(&mut state.server_process) {
         "The server is already running.".into()
     } else {
-        state.server_process = state.config.start_process();
+        state.server_process = state.process_info.start_process();
         "The server has been started.".into()
     }
 }

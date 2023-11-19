@@ -100,9 +100,9 @@ checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
 name = "btnify"
-version = "2.0.0"
+version = "2.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b93c006394467517a253db84721d7a831f8519eca7c7edbff6328c0d13910018"
+checksum = "52f2ba1a80ff8b7c550e4e8f0fe4f5c5c2ad596583804c42dc1b21c946faa817"
 dependencies = [
  "axum",
  "hyper",
