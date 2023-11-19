@@ -21,6 +21,7 @@ Minecraft server
 ```toml
 # CHANGE THIS to an address accessible online to your friends
 addr = "0.0.0.0:3000"
+password = "very secret"
 
 [process_info]
 cwd = "C:\\Users\\rad\\Documents\\testserver"
