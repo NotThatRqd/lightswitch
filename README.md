@@ -19,7 +19,7 @@ wherever you are running the lightswitch executable.
 Minecraft server
 
 ```toml
-# host the website on localhost:3000
+# CHANGE THIS to an address accessible online to your friends
 addr = "0.0.0.0:3000"
 
 [process_info]
@@ -38,3 +38,7 @@ cwd = './'
 cmd = 'dummy.exe'
 args = []
 ```
+
+Image of what the website looks like:
+
+![image](https://github.com/NotThatRqd/lightswitch/assets/67846317/ab734927-1aae-42f0-8063-327678548b92)
